@@ -50,8 +50,9 @@ h1 {
 .output-box {
     background-color: #1E1E1E;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-top: 20px;
+    color: white;
 }
 
 </style>
@@ -64,19 +65,21 @@ h1 {
 st.title("🌍 International Business Marketing Prompt Application")
 
 st.markdown("""
-### Generate Professional Global Marketing Content using Generative AI
+### Generate International Marketing Content using Generative AI
 
-This AI application automatically creates:
+This application automatically generates:
 
-✅ Global Product Titles  
-✅ Powerful Marketing Slogans  
-✅ International Advertising Descriptions  
-✅ Expert-Level Branding Content  
+✅ A Global-Ready Product Title  
+✅ A Powerful Marketing Slogan  
+✅ Product Advertising Descriptions from:
+- Digital Marketing Expert
+- Brand Strategist
+- International Sales Consultant
 
 """)
 
 # =========================================================
-# LOAD HUGGING FACE MODEL
+# LOAD MODEL
 # =========================================================
 
 @st.cache_resource
@@ -92,10 +95,10 @@ def load_model():
 generator = load_model()
 
 # =========================================================
-# SIDEBAR
+# SIDEBAR SETTINGS
 # =========================================================
 
-st.sidebar.title("⚙ Settings")
+st.sidebar.title("⚙ AI Settings")
 
 temperature = st.sidebar.slider(
     "Temperature",
@@ -105,7 +108,7 @@ temperature = st.sidebar.slider(
 )
 
 max_tokens = st.sidebar.slider(
-    "Max New Tokens",
+    "Max Tokens",
     100,
     500,
     300
@@ -118,19 +121,6 @@ max_tokens = st.sidebar.slider(
 product_name = st.text_input(
     "Enter Product Name",
     placeholder="Example: Smart Fitness Watch"
-)
-
-target_market = st.selectbox(
-    "Select Target Market",
-    [
-        "Global Market",
-        "Healthcare",
-        "Education",
-        "Finance",
-        "Technology",
-        "Fashion",
-        "Automobile"
-    ]
 )
 
 # =========================================================
@@ -146,33 +136,44 @@ if st.button("🚀 Generate Marketing Content"):
     else:
 
         prompt = f"""
-        You are an International Business Marketing Expert.
+You are a world-class International Business Marketing Expert.
 
-        Product Name:
-        {product_name}
+Generate the following for the product: {product_name}
 
-        Target Market:
-        {target_market}
+1. A Global-Ready Product Title
 
-        Generate the following:
+2. A Powerful Marketing Slogan
 
-        1. A Global-Ready Product Title
+3. Product Advertising Descriptions from:
+   - Digital Marketing Expert
+   - Brand Strategist
+   - International Sales Consultant
 
-        2. A Powerful Marketing Slogan
+Requirements:
+- Professional branding
+- Emotional engagement
+- International marketing standards
+- Persuasive advertising
+- Global audience compatibility
+- Premium business tone
 
-        3. Product Advertising Descriptions from:
-           - Digital Marketing Expert
-           - Brand Strategist
-           - International Sales Consultant
+Format the response exactly like this:
 
-        Requirements:
-        - Professional branding
-        - Emotional engagement
-        - International marketing standards
-        - Persuasive advertising
-        - Global audience compatibility
-        - Premium business tone
-        """
+Global-Ready Product Title:
+<answer>
+
+Powerful Marketing Slogan:
+<answer>
+
+Digital Marketing Expert:
+<answer>
+
+Brand Strategist:
+<answer>
+
+International Sales Consultant:
+<answer>
+"""
 
         with st.spinner("Generating AI Marketing Content..."):
 
@@ -180,7 +181,8 @@ if st.button("🚀 Generate Marketing Content"):
                 prompt,
                 max_length=max_tokens,
                 do_sample=True,
-                temperature=temperature
+                temperature=temperature,
+                truncation=True
             )
 
             output = result[0]["generated_text"]
@@ -191,32 +193,42 @@ if st.button("🚀 Generate Marketing Content"):
 
         st.success("Marketing Content Generated Successfully!")
 
-        st.markdown("## 📢 Generated Marketing Content")
+        st.markdown("## 📢 Generated Output")
 
         st.markdown(f"""
         <div class="output-box">
-        {output}
+        <pre>{output}</pre>
         </div>
         """, unsafe_allow_html=True)
 
 # =========================================================
-# SAMPLE OUTPUT SECTION
+# SAMPLE OUTPUT
 # =========================================================
 
 st.markdown("---")
 
-st.markdown("## 💡 Example Products")
+st.markdown("## 💡 Example Input")
 
-col1, col2, col3 = st.columns(3)
+st.info("Smart Fitness Watch")
 
-with col1:
-    st.info("Smart Fitness Watch")
+st.markdown("""
+### Expected Output Format
 
-with col2:
-    st.info("AI Health Tracker")
+Global-Ready Product Title:
+FitPulse Global X
 
-with col3:
-    st.info("Electric Scooter")
+Powerful Marketing Slogan:
+"Empowering Every Moment Worldwide"
+
+Digital Marketing Expert:
+A next-generation smart wearable designed for modern global consumers.
+
+Brand Strategist:
+FitPulse creates a premium emotional connection between technology and wellness.
+
+International Sales Consultant:
+Designed for international scalability with universal market appeal.
+""")
 
 # =========================================================
 # FOOTER
@@ -225,6 +237,5 @@ with col3:
 st.markdown("---")
 
 st.caption("""
-Developed using:
-Streamlit + Hugging Face Transformers + Generative AI
+Developed using Streamlit + Hugging Face Transformers + Prompt Engineering
 """)
